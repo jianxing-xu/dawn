@@ -1,0 +1,36 @@
+<div class="big-text-banner">
+  <h1>{{ block.settings.title }}</h1>
+  <p>{{ block.settings.description }}</p>
+</div>
+
+{% schema %}
+{
+  "name": "Big Text",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Hello World",
+      "label": "Big Text For Banner"
+    },
+    {
+      "type": "text",
+      "id": "description",
+      "default": "Do you want hold the world?",
+      "label": "Description"
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "Big Text",
+      "settings": {
+        "title": "Big Text For Banner",
+        "description": "Do you want hold the world?"
+      }
+    }
+  ]
+}
+{% endschema %}
