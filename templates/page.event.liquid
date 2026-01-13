@@ -1,0 +1,44 @@
+{% comment %} templates/page.event.liquid {% endcomment %}
+
+{% comment %}
+  在 page 对象上，访问 metafields 属性。
+  然后通过我们定义的命名空间(custom)和密钥(featured_collection)来定位。
+  最后，使用 .value 来获取我们刚刚在后台选择的那个【产品系列对象】。
+{% endcomment %}
+{% assign message = 'Hello Vue!' %}
+{% assign count = 0 %}
+
+<fancy-button data-state='{ "message": {{ message | json }}, "count": {{ count | json }} }'></fancy-button>
+<button id="fancy-button">Change Message</button>
+<script>
+  const button = document.querySelector('#fancy-button');
+  button.addEventListener('click', () => {
+    const fancyButton = document.querySelector('fancy-button');
+    fancyButton.setAttribute('data-message', 'Hello Vue! ' + Math.random());
+    console.log('change');
+  });
+</script>
+{%- assign metafields = page.metafields -%}
+<h2>{% echo shop.phone %}</h2>
+<h2>{% echo page.author %}</h2>
+<h2>{% echo page.handle %}</h2>
+<h2>{% echo page.metafields %}</h2>
+<h2>{% echo page.published_at %}</h2>
+<h2>{% echo page.url %}</h2>
+<h2>{% echo page.title %}</h2>
+<h2>{% echo customer.current_company %}</h2>
+<h2>metafields:{% echo customer.metafields %}</h2>
+<h2>template json:{{ template | json }}</h2>
+
+{% comment %} 检查我们是否成功获取到了一个系列，并且这个系列里有商品 {% endcomment %}
+{% comment %}
+  {% if featured_collection and featured_collection.products_count > 0 %}
+    <div class="event-products-section">
+      <div class="product-grid">
+        {% for product in featured_collection.products %}
+          {% comment %} {% render 'product-card', product: product %} {% endcomment %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+{% endcomment %}
