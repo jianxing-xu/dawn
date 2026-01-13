@@ -62,7 +62,7 @@
         "heading": {
           "type": "heading",
           "settings": {
-            "heading": "Talk about your brand Changed",
+            "heading": "general.talk_about_your_brand",
             "heading_size": "h1"
           }
         },
