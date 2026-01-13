@@ -8,6 +8,7 @@ on:
     paths-ignore:
       - 'config/settings_data.json'
       - 'templates/*.json'
+      - 'sections/*-group.json'
   workflow_dispatch:
 
 jobs:
@@ -59,6 +60,7 @@ jobs:
               # 自动解决冲突
               git checkout --ours config/settings_data.json || true
               git checkout --ours templates/*.json || true
+              git checkout --ours sections/*.json || true
               git add .
               git commit -m "chore: auto-resolve conflicts"
             }
