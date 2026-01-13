@@ -39,7 +39,7 @@
               class="announcement-bar__link link link--text focus-inset animate-arrow"
             >
           {%- endif -%}
-          <p class="announcement-bar__message h5">
+          <p class="announcement-bar__message h5" style="font-size: {{ section.blocks.first.settings.font_size }}px;">
             <span>{{ section.blocks.first.settings.text | escape }}</span>
             {%- if section.blocks.first.settings.link != blank -%}
               {{- 'icon-arrow.svg' | inline_asset_content -}}
@@ -99,8 +99,10 @@
                         class="announcement-bar__link link link--text focus-inset animate-arrow"
                       >
                     {%- endif -%}
-                    <p class="announcement-bar__message h5">
-                      <span>{{ block.settings.text | escape }}</span>
+                    <p class="announcement-bar__message h5" style="font-size: {{ block.settings.font_size }}px;">
+                      <span>
+                        {{- block.settings.text | escape -}}
+                      </span>
                       {%- if block.settings.link != blank -%}
                         {{- 'icon-arrow.svg' | inline_asset_content -}}
                       {%- endif -%}
@@ -160,6 +162,7 @@
       {%- endif -%}
     </div>
   </div>
+  {% render 'test-sub-tile', sub_title: section.settings.sub_tile %}
 </div>
 
 {% schema %}
@@ -171,6 +174,12 @@
     "groups": ["header"]
   },
   "settings": [
+    {
+      "type": "text",
+      "id": "sub_tile",
+      "label": "Sub Title",
+      "default": "Sub Title"
+    },
     {
       "type": "checkbox",
       "id": "auto_rotate",
@@ -186,13 +195,13 @@
       "unit": "s",
       "label": "t:sections.announcement-bar.settings.change_slides_speed.label",
       "default": 5
-    },    
+    },
     {
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "t:sections.all.colors.label",
       "default": "scheme-4"
-    },  
+    },
     {
       "type": "checkbox",
       "id": "show_line_separator",
@@ -205,8 +214,8 @@
     },
     {
       "type": "paragraph",
-         "content": "t:sections.announcement-bar.settings.paragraph.content"
-    },             
+      "content": "t:sections.announcement-bar.settings.paragraph.content"
+    },
     {
       "type": "checkbox",
       "id": "show_social",
@@ -244,6 +253,13 @@
           "type": "url",
           "id": "link",
           "label": "t:sections.announcement-bar.blocks.announcement.settings.link.label"
+        },
+        {
+          "type": "number",
+          "id": "font_size",
+          "label": "Font Size",
+          "default": 16,
+          "info": "in px"
         }
       ]
     }
@@ -253,7 +269,10 @@
       "name": "t:sections.announcement-bar.presets.name",
       "blocks": [
         {
-          "type": "announcement"
+          "type": "announcement",
+          "settings": {
+            "font_size": 16
+          }
         }
       ]
     }
