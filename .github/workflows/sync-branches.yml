@@ -51,19 +51,28 @@ jobs:
             git checkout -b "$TARGET_BRANCH"
           fi
           
-          # 合并代码变更，保护商店特定文件
+          # 合并代码变更，但始终保留商店特定配置文件
+          # 1. 先执行不自动提交的合并
           git merge "origin/$SOURCE_BRANCH" \
             --no-ff \
-            -X ours \
-            -m "chore: sync code from $SOURCE_BRANCH [skip deploy]" \
-            || {
-              # 自动解决冲突
-              git checkout --ours config/settings_data.json || true
-              git checkout --ours templates/*.json || true
-              git checkout --ours sections/*.json || true
-              git add .
-              git commit -m "chore: auto-resolve conflicts"
-            }
+            --no-commit \
+            || true
+          
+          # 2. 无论是否有冲突，强制还原目标分支上的配置文件版本
+          #    HEAD 指向合并前的目标分支提交
+          git checkout HEAD -- config/settings_data.json || true
+          git checkout HEAD -- templates/*.json || true
+          git checkout HEAD -- sections/*-group.json || true
+          
+          # 3. 重新暂存所有更改并提交合并
+          git add .
+          
+          # 如果合并后确实有变更，则创建合并提交；否则跳过提交
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: sync code from $SOURCE_BRANCH [skip deploy]"
+          else
+            echo "No code changes to sync from $SOURCE_BRANCH to $TARGET_BRANCH"
+          fi
           
           # 推送到 GitHub
           git push origin "$TARGET_BRANCH"
