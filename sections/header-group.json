@@ -18,8 +18,7 @@
           "type": "announcement",
           "settings": {
             "text": "Willkommen in unserem Shop",
-            "link": "",
-            "font_size": 16
+            "link": ""
           }
         }
       },
@@ -39,17 +38,6 @@
     },
     "header": {
       "type": "header",
-      "blocks": {
-        "static_text": {
-          "type": "big-text",
-          "static": true,
-          "settings": {
-            "title": "Hello World",
-            "description": "Do you want hold the world?"
-          },
-          "blocks": {}
-        }
-      },
       "settings": {
         "logo_position": "middle-left",
         "mobile_logo_position": "center",
@@ -67,17 +55,18 @@
         "padding_bottom": 20
       }
     },
-    "left_anno_CQVgbh": {
-      "type": "left_anno",
-      "name": "Left Anno",
+    "top_subscribe_8AD66t": {
+      "type": "top-subscribe",
+      "name": "Top Subscribe",
       "settings": {
-        "title": "Hello World",
-        "background_color": "#000"
+        "title": "Subscribe to our newsletter to get the latest news and updates.",
+        "subscribe_button_text": "Subscribe",
+        "close_button_text": "Close"
       }
     }
   },
   "order": [
-    "left_anno_CQVgbh",
+    "top_subscribe_8AD66t",
     "announcement-bar",
     "header"
   ]
