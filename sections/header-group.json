@@ -18,8 +18,7 @@
           "type": "announcement",
           "settings": {
             "text": "Welcome to our store",
-            "link": "",
-            "font_size": 16
+            "link": ""
           }
         }
       },
@@ -44,8 +43,8 @@
           "type": "big-text",
           "static": true,
           "settings": {
-            "title": "Hello World",
-            "description": "Do you want hold the world????????????????????????????????666666666666666666666666666666666666666666666666666666666666JSDKLFJSKLDFKLSJDFKLSDFJKSLFJKSLFDS"
+            "title": "Hello World BE CHANGED",
+            "description": "CHANGE"
           },
           "blocks": {}
         }
