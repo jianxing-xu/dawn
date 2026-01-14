@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Pre-commit hook: 自动排除 sync-branches.yml 中 paths-ignore 的文件
+# 这些文件应该由各个商店分支独立管理，不应该在 main/staging 分支提交
+
+# 从 sync-branches.yml 中提取的忽略路径
+IGNORE_PATTERNS=(
+  'config/settings_data.json'
+  'templates/*.json'
+  'sections/*-group.json'
+)
+
+# 获取暂存区的文件列表
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+# 检查是否有需要排除的文件
+EXCLUDED_FILES=()
+while IFS= read -r file; do
+  for pattern in "${IGNORE_PATTERNS[@]}"; do
+    # 将 glob 模式转换为 shell 模式匹配
+    if [[ "$pattern" == *'*'* ]]; then
+      # 处理通配符模式 (如 templates/*.json)
+      # 将 * 转换为 shell 通配符匹配
+      case "$file" in
+        $pattern)
+          EXCLUDED_FILES+=("$file")
+          break
+          ;;
+      esac
+    else
+      # 精确匹配
+      if [ "$file" = "$pattern" ]; then
+        EXCLUDED_FILES+=("$file")
+        break
+      fi
+    fi
+  done
+done <<< "$STAGED_FILES"
+
+# 如果有需要排除的文件，从暂存区移除
+if [ ${#EXCLUDED_FILES[@]} -gt 0 ]; then
+  echo "⚠️  检测到以下文件在 paths-ignore 列表中，已自动从提交中排除："
+  for file in "${EXCLUDED_FILES[@]}"; do
+    echo "   - $file"
+    git reset HEAD -- "$file" 2>/dev/null || true
+  done
+  echo ""
+  echo "💡 提示: 这些文件应该在各商店分支（如 de-main, us-main）中独立管理"
+  echo ""
+fi
+
+exit 0
