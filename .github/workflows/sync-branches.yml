@@ -33,30 +33,45 @@ jobs:
       - name: Revert protected file changes on source branch
         run: |
           SOURCE_BRANCH="${{ github.ref_name }}"
-          BASE_SHA="${{ github.event.before }}"
           HEAD_SHA="${{ github.sha }}"
 
+          # 尝试获取 BASE_SHA：优先用 push 事件的 before，否则用 HEAD~1
+          BASE_SHA="${{ github.event.before }}"
           if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
-            echo "No base commit found; skip cleanup"
+            echo "github.event.before is empty, falling back to HEAD~1"
+            BASE_SHA=$(git rev-parse HEAD~1 2>/dev/null || echo "")
+          fi
+
+          if [ -z "$BASE_SHA" ]; then
+            echo "No base commit found (first commit?); skip cleanup"
             exit 0
           fi
 
-          if git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- \
-            "config/settings_data.json" \
-            "templates/*.json" \
-            "sections/*-group.json" | grep -q .; then
-            echo "Protected files changed; reverting on $SOURCE_BRANCH"
-          else
+          echo "BASE_SHA: $BASE_SHA"
+          echo "HEAD_SHA: $HEAD_SHA"
+
+          # 检查是否有受保护文件被修改
+          CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- \
+            config/settings_data.json \
+            'templates/*.json' \
+            'sections/*-group.json' 2>/dev/null || echo "")
+
+          echo "Changed protected files:"
+          echo "$CHANGED_FILES"
+
+          if [ -z "$CHANGED_FILES" ]; then
             echo "No protected file changes detected; skip cleanup"
             exit 0
           fi
 
-          git restore --source="$BASE_SHA" --staged --worktree -- \
-            "config/settings_data.json" \
-            "templates/*.json" \
-            "sections/*-group.json"
+          echo "Protected files changed; reverting on $SOURCE_BRANCH"
 
-          if ! git diff --quiet; then
+          # 逐个还原受保护文件
+          for pattern in config/settings_data.json 'templates/*.json' 'sections/*-group.json'; do
+            git restore --source="$BASE_SHA" --staged --worktree -- $pattern 2>/dev/null || true
+          done
+
+          if ! git diff --quiet || ! git diff --cached --quiet; then
             git add .
             git commit -m "chore: revert protected files on $SOURCE_BRANCH [skip deploy]"
             git push origin "$SOURCE_BRANCH"
