@@ -1,0 +1,291 @@
+{% stylesheet %}
+  .good-subscribe {
+    padding: 40px 0;
+  }
+  .good-subscribe__wrap {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .good-subscribe__card {
+    display: grid;
+    gap: 24px;
+    background: #f7f7f7;
+    border-radius: 16px;
+    padding: 32px;
+  }
+  .good-subscribe__content {
+    display: grid;
+    gap: 12px;
+  }
+  .good-subscribe__title {
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.2;
+  }
+  .good-subscribe__desc {
+    margin: 0;
+    color: #555;
+  }
+  .good-subscribe__benefits {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 8px;
+  }
+  .good-subscribe__benefits li {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .good-subscribe__benefits li::before {
+    content: '•';
+    color: #111;
+  }
+  .good-subscribe__form {
+    display: grid;
+    gap: 12px;
+  }
+  .good-subscribe__input {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .good-subscribe__input input[type='email'],
+  .good-subscribe__input input[type='text'] {
+    flex: 1 1 220px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #fff;
+  }
+  .good-subscribe__input button {
+    padding: 12px 18px;
+    border: 0;
+    border-radius: 8px;
+    background: #111;
+    color: #fff;
+    cursor: pointer;
+  }
+  .good-subscribe__consent {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    font-size: 14px;
+    color: #666;
+  }
+  .good-subscribe__note {
+    font-size: 13px;
+    color: #777;
+  }
+  .good-subscribe__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: #111;
+    color: #fff;
+    border-radius: 999px;
+    font-size: 12px;
+  }
+  .good-subscribe__badge svg {
+    width: 14px;
+    height: 14px;
+  }
+  @media (min-width: 720px) {
+    .good-subscribe__card {
+      grid-template-columns: 1.1fr 1fr;
+      align-items: center;
+    }
+  }
+{% endstylesheet %}
+
+<section class="good-subscribe" aria-label="{{ section.settings.title | escape }}">
+  <div class="good-subscribe__wrap">
+    <div class="good-subscribe__card">
+      <div class="good-subscribe__content">
+        {% if section.settings.badge_text != blank %}
+          <span class="good-subscribe__badge">
+            {% if section.settings.badge_icon != blank %}
+              {{ section.settings.badge_icon }}
+            {% else %}
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path fill="currentColor" d="M12 2l2.3 4.6 5.1.7-3.7 3.6.9 5.1L12 13.9 7.4 16l.9-5.1L4.6 7.3l5.1-.7L12 2z"/>
+              </svg>
+            {% endif %}
+            {{ section.settings.badge_text }}
+          </span>
+        {% endif %}
+        {% if section.settings.title != blank %}
+          <h2 class="good-subscribe__title">{{ section.settings.title }}</h2>
+        {% endif %}
+        {% if section.settings.description != blank %}
+          <p class="good-subscribe__desc">{{ section.settings.description }}</p>
+        {% endif %}
+
+        {% if section.blocks.size > 0 %}
+          <ul class="good-subscribe__benefits">
+            {% for block in section.blocks %}
+              <li>{{ block.settings.text }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      <div>
+        {% form 'customer', class: 'good-subscribe__form' %}
+          <input type="hidden" name="contact[tags]" value="{{ section.settings.tag }}">
+          <div class="good-subscribe__input">
+            {% if section.settings.ask_name %}
+              <input
+                type="text"
+                name="contact[first_name]"
+                placeholder="{{ section.settings.name_placeholder | escape }}"
+                autocomplete="given-name"
+              >
+            {% endif %}
+            <input
+              type="email"
+              name="contact[email]"
+              placeholder="{{ section.settings.email_placeholder | escape }}"
+              required
+              autocomplete="email"
+            >
+            <button type="submit">
+              {{ section.settings.button_label }}
+            </button>
+          </div>
+
+          {% if section.settings.show_consent %}
+            <label class="good-subscribe__consent">
+              <input type="checkbox" name="contact[consent]" required>
+              <span>{{ section.settings.consent_text }}</span>
+            </label>
+          {% endif %}
+
+          {% if form.posted_successfully? %}
+            <div class="good-subscribe__note">
+              {{ section.settings.success_text }}
+            </div>
+          {% elsif form.errors %}
+            <div class="good-subscribe__note">
+              {{ form.errors | default_errors }}
+            </div>
+          {% endif %}
+
+          {% if section.settings.note != blank %}
+            <div class="good-subscribe__note">{{ section.settings.note }}</div>
+          {% endif %}
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Good Subscribe Form",
+  "settings": [
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "徽章文案",
+      "default": "每周精选"
+    },
+    {
+      "type": "html",
+      "id": "badge_icon",
+      "label": "徽章图标 SVG",
+      "default": ""
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "标题",
+      "default": "订阅新品与灵感"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "描述",
+      "default": "第一时间获取新品上架、限时折扣与内容更新。"
+    },
+    {
+      "type": "checkbox",
+      "id": "ask_name",
+      "label": "收集姓名",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "name_placeholder",
+      "label": "姓名占位文案",
+      "default": "你的名字"
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "邮箱占位文案",
+      "default": "you@email.com"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "按钮文案",
+      "default": "订阅"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_consent",
+      "label": "显示勾选同意",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "consent_text",
+      "label": "同意文案",
+      "default": "我同意接收邮件通知"
+    },
+    {
+      "type": "text",
+      "id": "success_text",
+      "label": "成功提示",
+      "default": "已订阅成功，欢迎加入！"
+    },
+    {
+      "type": "text",
+      "id": "tag",
+      "label": "订阅标签",
+      "default": "newsletter"
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "补充说明",
+      "default": "我们尊重你的隐私，随时可取消订阅。"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "亮点",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "文案",
+          "default": "每周 1-2 封精选邮件"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Good Subscribe Form",
+      "blocks": [{ "type": "benefit" }, { "type": "benefit" }]
+    }
+  ]
+}
+{% endschema %}
