@@ -1,4 +1,4 @@
-{% stylesheet %}
+{% style %}
   .good-subscribe {
     padding: 40px 0;
   }
@@ -24,7 +24,7 @@
     line-height: 1.2;
   }
   .good-subscribe__desc {
-    margin: 0;
+    margin: 1px;
     color: #555;
   }
   .good-subscribe__benefits {
@@ -40,7 +40,7 @@
     align-items: flex-start;
   }
   .good-subscribe__benefits li::before {
-    content: '•';
+    content: '*';
     color: #111;
   }
   .good-subscribe__form {
@@ -99,7 +99,7 @@
       align-items: center;
     }
   }
-{% endstylesheet %}
+{% endstyle %}
 
 <section class="good-subscribe" aria-label="{{ section.settings.title | escape }}">
   <div class="good-subscribe__wrap">
@@ -190,92 +190,92 @@
     {
       "type": "text",
       "id": "badge_text",
-      "label": "徽章文案",
-      "default": "每周精选"
+      "label": "Badge text",
+      "default": "Weekly picks"
     },
     {
       "type": "html",
       "id": "badge_icon",
-      "label": "徽章图标 SVG",
-      "default": ""
+      "label": "Badge icon SVG",
+      "default": "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><path fill=\"currentColor\" d=\"M12 2l2.3 4.6 5.1.7-3.7 3.6.9 5.1L12 13.9 7.4 16l.9-5.1L4.6 7.3l5.1-.7L12 2z\"/></svg>"
     },
     {
       "type": "text",
       "id": "title",
-      "label": "标题",
-      "default": "订阅新品与灵感"
+      "label": "Title",
+      "default": "Get new arrivals"
     },
     {
       "type": "textarea",
       "id": "description",
-      "label": "描述",
-      "default": "第一时间获取新品上架、限时折扣与内容更新。"
+      "label": "Description",
+      "default": "Be first to hear about drops and offers."
     },
     {
       "type": "checkbox",
       "id": "ask_name",
-      "label": "收集姓名",
+      "label": "Collect name",
       "default": true
     },
     {
       "type": "text",
       "id": "name_placeholder",
-      "label": "姓名占位文案",
-      "default": "你的名字"
+      "label": "Name placeholder",
+      "default": "Your name"
     },
     {
       "type": "text",
       "id": "email_placeholder",
-      "label": "邮箱占位文案",
+      "label": "Email placeholder",
       "default": "you@email.com"
     },
     {
       "type": "text",
       "id": "button_label",
-      "label": "按钮文案",
-      "default": "订阅"
+      "label": "Button label",
+      "default": "Subscribe"
     },
     {
       "type": "checkbox",
       "id": "show_consent",
-      "label": "显示勾选同意",
+      "label": "Show consent checkbox",
       "default": false
     },
     {
       "type": "text",
       "id": "consent_text",
-      "label": "同意文案",
-      "default": "我同意接收邮件通知"
+      "label": "Consent text",
+      "default": "I agree to receive email updates"
     },
     {
       "type": "text",
       "id": "success_text",
-      "label": "成功提示",
-      "default": "已订阅成功，欢迎加入！"
+      "label": "Success text",
+      "default": "Thanks for subscribing!"
     },
     {
       "type": "text",
       "id": "tag",
-      "label": "订阅标签",
+      "label": "Subscribe tag",
       "default": "newsletter"
     },
     {
       "type": "text",
       "id": "note",
-      "label": "补充说明",
-      "default": "我们尊重你的隐私，随时可取消订阅。"
+      "label": "Note",
+      "default": "We respect your privacy. Unsubscribe anytime."
     }
   ],
   "blocks": [
     {
       "type": "benefit",
-      "name": "亮点",
+      "name": "Benefit",
       "settings": [
         {
           "type": "text",
           "id": "text",
-          "label": "文案",
-          "default": "每周 1-2 封精选邮件"
+          "label": "Text",
+          "default": "1-2 curated emails per week"
         }
       ]
     }
