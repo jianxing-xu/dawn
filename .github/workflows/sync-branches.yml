@@ -11,15 +11,19 @@ on:
       - 'sections/*-group.json'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   cleanup:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: true
 
       - name: Configure Git
         run: |
@@ -38,9 +42,9 @@ jobs:
           fi
 
           if git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- \
-            config/settings_data.json \
-            templates/*.json \
-            sections/*-group.json | grep -q .; then
+            "config/settings_data.json" \
+            "templates/*.json" \
+            "sections/*-group.json" | grep -q .; then
             echo "Protected files changed; reverting on $SOURCE_BRANCH"
           else
             echo "No protected file changes detected; skip cleanup"
@@ -48,9 +52,9 @@ jobs:
           fi
 
           git restore --source="$BASE_SHA" --staged --worktree -- \
-            config/settings_data.json \
-            templates/*.json \
-            sections/*-group.json
+            "config/settings_data.json" \
+            "templates/*.json" \
+            "sections/*-group.json"
 
           if ! git diff --quiet; then
             git add .
@@ -69,9 +73,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: true
 
       - name: Configure Git
         run: |
