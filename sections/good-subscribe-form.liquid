@@ -1,0 +1,291 @@
+{% style %}
+  .good-subscribe {
+    padding: 40px 0;
+  }
+  .good-subscribe__wrap {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .good-subscribe__card {
+    display: grid;
+    gap: 24px;
+    background: #f7f7f7;
+    border-radius: 16px;
+    padding: 32px;
+  }
+  .good-subscribe__content {
+    display: grid;
+    gap: 12px;
+  }
+  .good-subscribe__title {
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.2;
+  }
+  .good-subscribe__desc {
+    margin: 1px;
+    color: #555;
+  }
+  .good-subscribe__benefits {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 8px;
+  }
+  .good-subscribe__benefits li {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .good-subscribe__benefits li::before {
+    content: '*';
+    color: #111;
+  }
+  .good-subscribe__form {
+    display: grid;
+    gap: 12px;
+  }
+  .good-subscribe__input {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .good-subscribe__input input[type='email'],
+  .good-subscribe__input input[type='text'] {
+    flex: 1 1 220px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #fff;
+  }
+  .good-subscribe__input button {
+    padding: 12px 18px;
+    border: 0;
+    border-radius: 8px;
+    background: #111;
+    color: #fff;
+    cursor: pointer;
+  }
+  .good-subscribe__consent {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    font-size: 14px;
+    color: #666;
+  }
+  .good-subscribe__note {
+    font-size: 13px;
+    color: #777;
+  }
+  .good-subscribe__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: #111;
+    color: #fff;
+    border-radius: 999px;
+    font-size: 12px;
+  }
+  .good-subscribe__badge svg {
+    width: 14px;
+    height: 14px;
+  }
+  @media (min-width: 720px) {
+    .good-subscribe__card {
+      grid-template-columns: 1.1fr 1fr;
+      align-items: center;
+    }
+  }
+{% endstyle %}
+
+<section class="good-subscribe" aria-label="{{ section.settings.title | escape }}">
+  <div class="good-subscribe__wrap">
+    <div class="good-subscribe__card">
+      <div class="good-subscribe__content">
+        {% if section.settings.badge_text != blank %}
+          <span class="good-subscribe__badge">
+            {% if section.settings.badge_icon != blank %}
+              {{ section.settings.badge_icon }}
+            {% else %}
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path fill="currentColor" d="M12 2l2.3 4.6 5.1.7-3.7 3.6.9 5.1L12 13.9 7.4 16l.9-5.1L4.6 7.3l5.1-.7L12 2z"/>
+              </svg>
+            {% endif %}
+            {{ section.settings.badge_text }}
+          </span>
+        {% endif %}
+        {% if section.settings.title != blank %}
+          <h2 class="good-subscribe__title">{{ section.settings.title }}</h2>
+        {% endif %}
+        {% if section.settings.description != blank %}
+          <p class="good-subscribe__desc">{{ section.settings.description }}</p>
+        {% endif %}
+
+        {% if section.blocks.size > 0 %}
+          <ul class="good-subscribe__benefits">
+            {% for block in section.blocks %}
+              <li>{{ block.settings.text }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      <div>
+        {% form 'customer', class: 'good-subscribe__form' %}
+          <input type="hidden" name="contact[tags]" value="{{ section.settings.tag }}">
+          <div class="good-subscribe__input">
+            {% if section.settings.ask_name %}
+              <input
+                type="text"
+                name="contact[first_name]"
+                placeholder="{{ section.settings.name_placeholder | escape }}"
+                autocomplete="given-name"
+              >
+            {% endif %}
+            <input
+              type="email"
+              name="contact[email]"
+              placeholder="{{ section.settings.email_placeholder | escape }}"
+              required
+              autocomplete="email"
+            >
+            <button type="submit">
+              {{ section.settings.button_label }}
+            </button>
+          </div>
+
+          {% if section.settings.show_consent %}
+            <label class="good-subscribe__consent">
+              <input type="checkbox" name="contact[consent]" required>
+              <span>{{ section.settings.consent_text }}</span>
+            </label>
+          {% endif %}
+
+          {% if form.posted_successfully? %}
+            <div class="good-subscribe__note">
+              {{ section.settings.success_text }}
+            </div>
+          {% elsif form.errors %}
+            <div class="good-subscribe__note">
+              {{ form.errors | default_errors }}
+            </div>
+          {% endif %}
+
+          {% if section.settings.note != blank %}
+            <div class="good-subscribe__note">{{ section.settings.note }}</div>
+          {% endif %}
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Good Subscribe Form",
+  "settings": [
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "Weekly picks"
+    },
+    {
+      "type": "html",
+      "id": "badge_icon",
+      "label": "Badge icon SVG",
+      "default": "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><path fill=\"currentColor\" d=\"M12 2l2.3 4.6 5.1.7-3.7 3.6.9 5.1L12 13.9 7.4 16l.9-5.1L4.6 7.3l5.1-.7L12 2z\"/></svg>"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Get new arrivals"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Be first to hear about drops and offers."
+    },
+    {
+      "type": "checkbox",
+      "id": "ask_name",
+      "label": "Collect name",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "name_placeholder",
+      "label": "Name placeholder",
+      "default": "Your name"
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Email placeholder",
+      "default": "you@email.com"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Subscribe"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_consent",
+      "label": "Show consent checkbox",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "consent_text",
+      "label": "Consent text",
+      "default": "I agree to receive email updates"
+    },
+    {
+      "type": "text",
+      "id": "success_text",
+      "label": "Success text",
+      "default": "Thanks for subscribing!"
+    },
+    {
+      "type": "text",
+      "id": "tag",
+      "label": "Subscribe tag",
+      "default": "newsletter"
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Note",
+      "default": "We respect your privacy. Unsubscribe anytime."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "1-2 curated emails per week"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Good Subscribe Form",
+      "blocks": [{ "type": "benefit" }, { "type": "benefit" }, { "type": "benefit" }, { "type": "benefit" }]
+    }
+  ]
+}
+{% endschema %}
