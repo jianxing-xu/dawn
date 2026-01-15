@@ -1,4 +1,4 @@
-name: Sync Store Branches (Code Only)
+name: SyncStoreBranches
 
 on:
   push:
@@ -12,13 +12,61 @@ on:
   workflow_dispatch:
 
 jobs:
+  cleanup:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Revert protected file changes on source branch
+        run: |
+          SOURCE_BRANCH="${{ github.ref_name }}"
+          BASE_SHA="${{ github.event.before }}"
+          HEAD_SHA="${{ github.sha }}"
+
+          if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            echo "No base commit found; skip cleanup"
+            exit 0
+          fi
+
+          if git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- \
+            config/settings_data.json \
+            templates/*.json \
+            sections/*-group.json | grep -q .; then
+            echo "Protected files changed; reverting on $SOURCE_BRANCH"
+          else
+            echo "No protected file changes detected; skip cleanup"
+            exit 0
+          fi
+
+          git restore --source="$BASE_SHA" --staged --worktree -- \
+            config/settings_data.json \
+            templates/*.json \
+            sections/*-group.json
+
+          if ! git diff --quiet; then
+            git add .
+            git commit -m "chore: revert protected files on $SOURCE_BRANCH [skip deploy]"
+            git push origin "$SOURCE_BRANCH"
+          else
+            echo "No changes after restore; nothing to commit"
+          fi
   sync:
+    needs: cleanup
     runs-on: ubuntu-latest
     strategy:
       matrix:
         store: [de, us]
       fail-fast: false
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -33,41 +81,15 @@ jobs:
       - name: Sync to store branches
         run: |
           SOURCE_BRANCH="${{ github.ref_name }}"
-          BASE_SHA="${{ github.event.before }}"
-          
           # 确定目标分支
           if [ "$SOURCE_BRANCH" = "main" ]; then
             TARGET_BRANCH="${{ matrix.store }}-main"
           else
             TARGET_BRANCH="${{ matrix.store }}-staging"
           fi
-          
+
           echo "Syncing $SOURCE_BRANCH -> $TARGET_BRANCH"
 
-          # 先在源分支上清理受保护文件的误提交
-          git checkout "$SOURCE_BRANCH"
-          if [ -n "$BASE_SHA" ] && [ "$BASE_SHA" != "0000000000000000000000000000000000000000" ]; then
-            git restore --source="$BASE_SHA" --staged --worktree -- \
-              config/settings_data.json \
-              templates/*.json \
-              sections/*-group.json \
-              || true
-            git clean -f -- config/settings_data.json templates/*.json sections/*-group.json || true
-
-            if ! git diff --quiet; then
-              git add .
-              git commit -m "chore: revert store config changes on $SOURCE_BRANCH [skip deploy]"
-              git push origin "$SOURCE_BRANCH"
-            else
-              echo "No protected file changes on $SOURCE_BRANCH"
-            fi
-          else
-            echo "No base commit found; skip source cleanup"
-          fi
-
-          # 确保后续使用最新的源分支
-          git fetch origin "$SOURCE_BRANCH"
-          
           # 检出或创建目标分支
           if git ls-remote --exit-code --heads origin "$TARGET_BRANCH" >/dev/null 2>&1; then
             git fetch origin "$TARGET_BRANCH"
@@ -75,29 +97,29 @@ jobs:
           else
             git checkout -b "$TARGET_BRANCH"
           fi
-          
+
           # 合并代码变更，但始终保留商店特定配置文件
           # 1. 先执行不自动提交的合并
           git merge "origin/$SOURCE_BRANCH" \
             --no-ff \
             --no-commit \
             || true
-          
+
           # 2. 无论是否有冲突，强制还原目标分支上的配置文件版本
           #    HEAD 指向合并前的目标分支提交
           git checkout HEAD -- config/settings_data.json || true
           git checkout HEAD -- templates/*.json || true
           git checkout HEAD -- sections/*-group.json || true
-          
+
           # 3. 重新暂存所有更改并提交合并
           git add .
-          
+
           # 如果合并后确实有变更，则创建合并提交；否则跳过提交
           if ! git diff --cached --quiet; then
             git commit -m "chore: sync code from $SOURCE_BRANCH [skip deploy]"
           else
             echo "No code changes to sync from $SOURCE_BRANCH to $TARGET_BRANCH"
           fi
-          
+
           # 推送到 GitHub
           git push origin "$TARGET_BRANCH"
