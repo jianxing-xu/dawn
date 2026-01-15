@@ -33,6 +33,7 @@ jobs:
       - name: Sync to store branches
         run: |
           SOURCE_BRANCH="${{ github.ref_name }}"
+          BASE_SHA="${{ github.event.before }}"
           
           # 确定目标分支
           if [ "$SOURCE_BRANCH" = "main" ]; then
@@ -42,6 +43,30 @@ jobs:
           fi
           
           echo "Syncing $SOURCE_BRANCH -> $TARGET_BRANCH"
+
+          # 先在源分支上清理受保护文件的误提交
+          git checkout "$SOURCE_BRANCH"
+          if [ -n "$BASE_SHA" ] && [ "$BASE_SHA" != "0000000000000000000000000000000000000000" ]; then
+            git restore --source="$BASE_SHA" --staged --worktree -- \
+              config/settings_data.json \
+              templates/*.json \
+              sections/*-group.json \
+              || true
+            git clean -f -- config/settings_data.json templates/*.json sections/*-group.json || true
+
+            if ! git diff --quiet; then
+              git add .
+              git commit -m "chore: revert store config changes on $SOURCE_BRANCH [skip deploy]"
+              git push origin "$SOURCE_BRANCH"
+            else
+              echo "No protected file changes on $SOURCE_BRANCH"
+            fi
+          else
+            echo "No base commit found; skip source cleanup"
+          fi
+
+          # 确保后续使用最新的源分支
+          git fetch origin "$SOURCE_BRANCH"
           
           # 检出或创建目标分支
           if git ls-remote --exit-code --heads origin "$TARGET_BRANCH" >/dev/null 2>&1; then
