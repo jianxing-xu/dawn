@@ -1,4 +1,12 @@
 {
-  "sections": {},
-  "order": []
+  "sections": {
+    "announcement-top": {
+      "type": "anno-top",
+      "settings": {
+        "title": "Hello World",
+        "background_color": "#000"
+      }
+    }
+  },
+  "order": ["announcement-top"]
 }
