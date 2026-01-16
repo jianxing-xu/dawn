@@ -1,7 +1,12 @@
 {
   "scripts": {
-    "dev": "shopify theme dev --store=dawn-dev",
-    "pull:de": "git fetch origin de-main && git merge origin/de-main --no-ff --no-commit && git merge --quit && git reset",
-    "pull:us": "git fetch origin us-main && git merge origin/us-main --no-ff --no-commit && git merge --quit && git reset"
+    "dev:de-main": "shopify theme dev --store=de-main",
+    "dev:us-main": "shopify theme dev --store=us-main",
+    "dev:de-staging": "shopify theme dev --store=de-staging",
+    "dev:us-staging": "shopify theme dev --store=us-staging",
+    "pull:de-main": "git fetch origin de-main && git merge origin/de-main --no-ff --no-commit && git merge --quit && git reset",
+    "pull:us-main": "git fetch origin us-main && git merge origin/us-main --no-ff --no-commit && git merge --quit && git reset",
+    "pull:de-staging": "git fetch origin de-staging && git merge origin/de-staging --no-ff --no-commit && git merge --quit && git reset",
+    "pull:us-staging": "git fetch origin us-staging && git merge origin/us-staging --no-ff --no-commit && git merge --quit && git reset"
   }
 }
