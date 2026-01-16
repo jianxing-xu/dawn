@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "dev": "shopify theme dev --store=dawn-dev",
+    "pull:de": "shopify theme pull --store=dawn-de",
+    "pull:us": "shopify theme pull --store=dawn-us"
+  }
+}
