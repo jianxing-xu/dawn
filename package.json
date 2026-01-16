@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "shopify theme dev --store=dawn-dev",
-    "pull:de": "git fetch origin de-main && git merge origin/de-main --no-ff --no-commit && git merge --quit",
-    "pull:us": "git fetch origin us-main && git merge origin/us-main --no-ff --no-commit && git merge --quit"
+    "pull:de": "git fetch origin de-main && git merge origin/de-main --no-ff --no-commit && git merge --quit && git reset",
+    "pull:us": "git fetch origin us-main && git merge origin/us-main --no-ff --no-commit && git merge --quit && git reset"
   }
 }
