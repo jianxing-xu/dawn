@@ -33,12 +33,20 @@
   .ask-subscribe button:focus {
     outline: none;
   }
+  .ask-subscribe .subscribe-button {
+    background-color: #000;
+    color: #fff;
+  }
+  .ask-subscribe .close-button {
+    background-color: rosybrown;
+    color: #000;
+  }
 {% endstylesheet %}
 <div class="ask-subscribe">
   <p>{{ section.settings.title }}</p>
   <div>
-    <button>{{ section.settings.subscribe_button_text }}</button>
-    <button>{{ section.settings.close_button_text }}</button>
+    <button class="subscribe-button">{{ section.settings.subscribe_button_text }}</button>
+    <button class="close-button">{{ section.settings.close_button_text }}</button>
   </div>
 </div>
 
