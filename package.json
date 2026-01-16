@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev:de-main": "shopify theme dev --store=de-main",
+    "dev:de-main": "shopify theme dev --store=kenshin-dev",
     "dev:us-main": "shopify theme dev --store=us-main",
     "dev:de-staging": "shopify theme dev --store=de-staging",
     "dev:us-staging": "shopify theme dev --store=us-staging",
