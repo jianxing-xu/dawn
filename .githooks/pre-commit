@@ -7,6 +7,7 @@
 IGNORE_PATTERNS=(
   'config/settings_data.json'
   'templates/*.json'
+  'templates/gift_card.liquid'
   'sections/*-group.json'
 )
 
