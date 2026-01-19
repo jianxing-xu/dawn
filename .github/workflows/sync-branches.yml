@@ -8,6 +8,7 @@ on:
     paths-ignore:
       - 'config/settings_data.json'
       - 'templates/*.json'
+      - 'templates/gift_card.liquid'
       - 'sections/*-group.json'
   workflow_dispatch:
 
