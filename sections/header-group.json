@@ -11,6 +11,15 @@
   "name": "t:sections.header.name",
   "type": "header",
   "sections": {
+    "top_subscribe_8AD66t": {
+      "type": "top-subscribe",
+      "name": "Top Subscribe",
+      "settings": {
+        "title": "Subscribe to our newsletter to get the latest news and updates.......................",
+        "subscribe_button_text": "Subscribe",
+        "close_button_text": "Close"
+      }
+    },
     "announcement-bar": {
       "type": "announcement-bar",
       "blocks": {
@@ -53,15 +62,6 @@
         "margin_bottom": 0,
         "padding_top": 20,
         "padding_bottom": 20
-      }
-    },
-    "top_subscribe_8AD66t": {
-      "type": "top-subscribe",
-      "name": "Top Subscribe",
-      "settings": {
-        "title": "Subscribe to our newsletter to get the latest news and updates.",
-        "subscribe_button_text": "Subscribe",
-        "close_button_text": "Close"
       }
     }
   },
