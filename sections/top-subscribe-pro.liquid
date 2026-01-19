@@ -1,0 +1,119 @@
+{% stylesheet %}
+  .ask-subscribe {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    padding: 8px 20px;
+    border-radius: 10px;
+    transition: all 1s ease-in-out;
+    height: auto;
+  }
+  .ask-subscribe p {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin: 4px 0;
+  }
+  .ask-subscribe button {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #000;
+    border-radius: 5px;
+    padding: 10px 20px;
+  }
+  .ask-subscribe button:hover {
+    background-color: #333;
+  }
+  .ask-subscribe button:active {
+    background-color: #000;
+  }
+  .ask-subscribe button:focus {
+    outline: none;
+  }
+  .ask-subscribe .subscribe-button {
+    background-color: #000;
+    color: #fff;
+  }
+  .ask-subscribe .close-button {
+    background-color: green;
+    color: #000;
+  }
+{% endstylesheet %}
+<div class="ask-subscribe">
+  <p>{{ section.settings.title }}</p>
+  <div>
+    <button class="subscribe-button">{{ section.settings.subscribe_button_text }}</button>
+    <button class="close-button">{{ section.settings.close_button_text }}</button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const askSubscribe = document.querySelector('.ask-subscribe');
+    const subscribeButton = document.querySelector('.ask-subscribe button:first-child');
+    const closeButton = document.querySelector('.ask-subscribe button:last-child');
+    // 添加消失动画
+    function hideWithFade() {
+      // 使用opacity和transform移动来做更流畅的动画，避免layout抖动
+      askSubscribe.style.transition =
+        'opacity 0.6s cubic-bezier(0.43,0.13,0.23,0.96), transform 0.6s cubic-bezier(0.43,0.13,0.23,0.96)';
+      askSubscribe.style.willChange = 'opacity, transform';
+      // 回流触发，确保transition被应用
+      void askSubscribe.offsetTop;
+      askSubscribe.style.opacity = '0';
+      askSubscribe.style.transform = 'translateY(-20px)';
+      setTimeout(() => {
+        askSubscribe.style.display = 'none';
+        askSubscribe.style.transform = '';
+        askSubscribe.style.opacity = '';
+        askSubscribe.style.transition = '';
+        askSubscribe.style.willChange = '';
+      }, 600);
+    }
+
+    subscribeButton.addEventListener('click', hideWithFade);
+    closeButton.addEventListener('click', hideWithFade);
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Top Subscribe Pro",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Hello World",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "subscribe_button_text",
+      "default": "Subscribe",
+      "label": "Subscribe Button Text"
+    },
+    {
+      "type": "text",
+      "id": "close_button_text",
+      "default": "Close",
+      "label": "Close Button Text"
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "Top Subscribe Pro",
+      "settings": {
+        "title": "Subscribe to our newsletter to get the latest news and updates.",
+        "subscribe_button_text": "Subscribe",
+        "close_button_text": "Close"
+      }
+    }
+  ]
+}
+{% endschema %}
