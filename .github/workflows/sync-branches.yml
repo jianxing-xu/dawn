@@ -104,9 +104,9 @@ jobs:
 
       - name: Generate assets/uno.css
         run: |
-          # dev:uno uses watch mode (-w) and will not exit by itself in CI.
+          # build:uno uses watch mode (-w) and will not exit by itself in CI.
           # Use timeout to let it generate once, then stop it.
-          timeout 20s yarn dev:uno || true
+          timeout 20s yarn build:uno || true
 
           if [ ! -s assets/uno.css ]; then
             echo "assets/uno.css was not generated (or is empty)."
