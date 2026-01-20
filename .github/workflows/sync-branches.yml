@@ -35,6 +35,19 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+        # For Build UnoCSS START
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+
+      - name: Enable Corepack (Yarn)
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+        # For Build UnoCSS END
 
       - name: Sync to store branches
         run: |
@@ -70,7 +83,10 @@ jobs:
           git restore --source=HEAD -- templates/gift_card.liquid || true
           git restore --source=HEAD -- sections/*-group.json || true
 
-          # 3. 重新暂存所有更改并提交合并
+          # 3. 基于合并后的代码生成 UnoCSS
+          yarn build:uno
+
+          # 4. 重新暂存所有更改并提交合并（包含 assets/uno.css）
           git add .
 
           # 如果合并后确实有变更，则创建合并提交；否则跳过提交
@@ -80,50 +96,5 @@ jobs:
             echo "No code changes to sync from $SOURCE_BRANCH to $TARGET_BRANCH"
           fi
 
-          # 推送到 GitHub
+          # 推送到 GitHub（包含 assets/uno.css）
           git push origin "$TARGET_BRANCH"
-
-  build_uno_css:
-    name: Build UnoCSS (assets/uno.css)
-    runs-on: ubuntu-latest
-    needs: sync
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: true
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: yarn
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Generate assets/uno.css
-        run: |
-          # build:uno uses watch mode (-w) and will not exit by itself in CI.
-          # Use timeout to let it generate once, then stop it.
-          timeout 20s yarn build:uno || true
-
-          if [ ! -s assets/uno.css ]; then
-            echo "assets/uno.css was not generated (or is empty)."
-            exit 1
-          fi
-
-      - name: Commit and push assets/uno.css to current branch
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          git add assets/uno.css
-
-          if git diff --cached --quiet; then
-            echo "assets/uno.css unchanged; skip commit."
-            exit 0
-          fi
-
-          git commit -m "chore: build uno.css [skip ci]"
-          git push origin "HEAD:${{ github.ref_name }}"
