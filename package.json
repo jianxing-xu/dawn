@@ -1,6 +1,7 @@
 {
   "scripts": {
     "dev:uno": "unocss \"./{snippets,sections,blocks,layout}/*.liquid\" -o assets/uno.css -w",
+    "build:uno": "unocss \"./{snippets,sections,blocks,layout}/*.liquid\" -o assets/uno.css",
     "dev:de-main": "shopify theme dev --store=kenshin-dev && yarn dev:uno",
     "dev:us-main": "shopify theme dev --store=us-main",
     "dev:de-staging": "shopify theme dev --store=de-staging",
