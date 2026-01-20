@@ -9,6 +9,7 @@ IGNORE_PATTERNS=(
   'templates/*.json'
   'templates/gift_card.liquid'
   'sections/*-group.json'
+  'assets/uno.css'
 )
 
 # 获取暂存区的文件列表
