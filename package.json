@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "dev:de-main": "shopify theme dev --store=kenshin-dev",
+    "dev:uno": "unocss \"./{snippets,sections,blocks,layout}/*.liquid\" -o assets/uno.css -w",
+    "dev:de-main": "shopify theme dev --store=kenshin-dev && yarn dev:uno",
     "dev:us-main": "shopify theme dev --store=us-main",
     "dev:de-staging": "shopify theme dev --store=de-staging",
     "dev:us-staging": "shopify theme dev --store=us-staging",
@@ -8,5 +9,9 @@
     "pull:us-main": "git fetch origin us-main && git merge origin/us-main --no-ff --no-commit && git merge --quit && git reset",
     "pull:de-staging": "git fetch origin de-staging && git merge origin/de-staging --no-ff --no-commit && git merge --quit && git reset",
     "pull:us-staging": "git fetch origin us-staging && git merge origin/us-staging --no-ff --no-commit && git merge --quit && git reset"
+  },
+  "dependencies": {
+    "@unocss/cli": "^66.6.0",
+    "unocss": "^66.6.0"
   }
 }
