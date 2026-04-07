@@ -2,17 +2,18 @@ name: SyncStoreBranches
 
 on:
   push:
-    branches:
-      - main
-      - staging
-      - test
-    paths-ignore:
-      - 'config/markets.json'
-      - 'config/settings_data.json'
-      - 'templates/*.json'
-      - 'templates/gift_card.liquid'
-      - 'sections/*-group.json'
-      - 'assets/uno.css'
+    # 不使用自动触发，使用手动触发
+    # branches:
+    #   - main
+    #   - staging
+    #   - test
+    # paths-ignore:
+    #   - 'config/markets.json'
+    #   - 'config/settings_data.json'
+    #   - 'templates/*.json'
+    #   - 'templates/gift_card.liquid'
+    #   - 'sections/*-group.json'
+    #   - 'assets/uno.css'
   workflow_dispatch:
 
 permissions:
