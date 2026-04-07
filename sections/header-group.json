@@ -72,9 +72,19 @@
         "subscribe_button_text": "Subscribe",
         "close_button_text": "Close"
       }
+    },
+    "top_subscribe_pro_GwThQe": {
+      "type": "top-subscribe-pro",
+      "name": "Top Subscribe Pro",
+      "settings": {
+        "title": "Subscribe to our newsletter to get the latest news and updates.",
+        "subscribe_button_text": "Subscribe",
+        "close_button_text": "Close"
+      }
     }
   },
   "order": [
+    "top_subscribe_pro_GwThQe",
     "top_subscribe_8AD66t",
     "announcement-bar",
     "header",
