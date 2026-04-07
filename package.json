@@ -2,14 +2,27 @@
   "scripts": {
     "dev:uno": "unocss \"./{snippets,sections,blocks,layout}/*.liquid\" -o assets/uno.css -w",
     "build:uno": "unocss \"./{snippets,sections,blocks,layout}/*.liquid\" -o assets/uno.css",
-    "dev:de-main": "shopify theme dev --store=kenshin-dev && yarn dev:uno",
-    "dev:us-main": "shopify theme dev --store=us-main",
-    "dev:de-staging": "shopify theme dev --store=de-staging",
-    "dev:us-staging": "shopify theme dev --store=us-staging",
-    "pull:de-main": "git fetch origin de-main && git merge origin/de-main --no-ff --no-commit && git merge --quit && git reset",
-    "pull:us-main": "git fetch origin us-main && git merge origin/us-main --no-ff --no-commit && git merge --quit && git reset",
-    "pull:de-staging": "git fetch origin de-staging && git merge origin/de-staging --no-ff --no-commit && git merge --quit && git reset",
-    "pull:us-staging": "git fetch origin us-staging && git merge origin/us-staging --no-ff --no-commit && git merge --quit && git reset"
+    "dev:main-de": "shopify theme dev --store=main-de",
+    "dev:main-fr": "shopify theme dev --store=main-fr",
+    "dev:main-au": "shopify theme dev --store=main-au",
+
+    "dev:staging-de": "shopify theme dev --store=staging-de-2",
+    "dev:staging-fr": "shopify theme dev --store=staging-fr-3",
+    "dev:staging-au": "shopify theme dev --store=staging-au-2",
+
+    "dev:test-de": "shopify theme dev --store=test-de",
+    "dev:test-fr": "shopify theme dev --store=test-fr",
+    "dev:test-au": "shopify theme dev --store=test-au",
+
+    "pull:main-de": "git fetch origin main-de && git merge origin/main-de --no-ff --no-commit && git merge --quit && git reset",
+    "pull:main-fr": "git fetch origin main-fr && git merge origin/main-fr --no-ff --no-commit && git merge --quit && git reset",
+    "pull:main-au": "git fetch origin main-au && git merge origin/main-au --no-ff --no-commit && git merge --quit && git reset",
+    "pull:staging-de": "git fetch origin staging-de && git merge origin/staging-de --no-ff --no-commit && git merge --quit && git reset",
+    "pull:staging-fr": "git fetch origin staging-fr && git merge origin/staging-fr --no-ff --no-commit && git merge --quit && git reset",
+    "pull:staging-au": "git fetch origin staging-au-2 && git merge origin/staging-au-2 --no-ff --no-commit && git merge --quit && git reset",
+    "pull:test-de": "git fetch origin test-de && git merge origin/test-de --no-ff --no-commit && git merge --quit && git reset",
+    "pull:test-fr": "git fetch origin test-fr && git merge origin/test-fr --no-ff --no-commit && git merge --quit && git reset",
+    "pull:test-au": "git fetch origin test-au && git merge origin/test-au --no-ff --no-commit && git merge --quit && git reset"
   },
   "dependencies": {
     "@unocss/cli": "^66.6.0",
