@@ -18,6 +18,8 @@
 
 `fr.fridayparts.com <---> main-fr`
 
+发布主题
+
 `...`
 
 3. 配置对应站点数据，环境等
