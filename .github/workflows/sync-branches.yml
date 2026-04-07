@@ -1,8 +1,8 @@
 name: SyncStoreBranches
 
 on:
-  push:
-    # 不使用自动触发，使用手动触发
+  # 不使用自动触发，使用手动触发
+  # push:
     # branches:
     #   - main
     #   - staging
@@ -15,7 +15,6 @@ on:
     #   - 'sections/*-group.json'
     #   - 'assets/uno.css'
   workflow_dispatch:
-
 permissions:
   contents: write
 
