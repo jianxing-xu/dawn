@@ -45,16 +45,17 @@
 <div class="ask-subscribe">
   <p>{{ section.settings.title }}</p>
   <div>
-    <button class="subscribe-button">{{ section.settings.subscribe_button_text }}</button>
-    <button class="close-button">{{ section.settings.close_button_text }}</button>
+    <h1>Pro Version</h1>
+    <button class="subscribe-button-pro">{{ section.settings.subscribe_button_text }}</button>
+    <button class="close-button-pro">{{ section.settings.close_button_text }}</button>
   </div>
 </div>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const askSubscribe = document.querySelector('.ask-subscribe');
-    const subscribeButton = document.querySelector('.ask-subscribe button:first-child');
-    const closeButton = document.querySelector('.ask-subscribe button:last-child');
+    const subscribeButton = document.querySelector('.ask-subscribe .subscribe-button-pro');
+    const closeButton = document.querySelector('.ask-subscribe .close-button-pro');
     // 添加消失动画
     function hideWithFade() {
       // 使用opacity和transform移动来做更流畅的动画，避免layout抖动
