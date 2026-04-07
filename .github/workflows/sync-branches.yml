@@ -5,22 +5,72 @@ on:
     branches:
       - main
       - staging
+      - test
     paths-ignore:
+      - 'config/markets.json'
       - 'config/settings_data.json'
       - 'templates/*.json'
       - 'templates/gift_card.liquid'
       - 'sections/*-group.json'
+      - 'assets/uno.css'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
+  # build_uno_css:
+  #   name: Build UnoCSS (assets/uno.css) on source branch
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  #         persist-credentials: true
+
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20
+  #         cache: yarn
+
+  #     - name: Enable Corepack (Yarn)
+  #       run: corepack enable
+
+  #     - name: Install dependencies
+  #       run: yarn install --frozen-lockfile
+
+  #     - name: Generate assets/uno.css
+  #       run: |
+  #         yarn build:uno
+
+  #         if [ ! -s assets/uno.css ]; then
+  #           echo "assets/uno.css was not generated (or is empty)."
+  #           exit 1
+  #         fi
+
+  #     - name: Commit and push assets/uno.css to source branch
+  #       run: |
+  #         git config user.name "github-actions[bot]"
+  #         git config user.email "github-actions[bot]@users.noreply.github.com"
+
+  #         git add assets/uno.css
+
+  #         if git diff --cached --quiet; then
+  #           echo "assets/uno.css unchanged; skip commit."
+  #           exit 0
+  #         fi
+
+  #         git commit -m "chore: build uno.css [skip ci]"
+  #         git push origin "HEAD:${{ github.ref_name }}"
+
   sync:
+    # needs: build_uno_css
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        store: [de, us]
+        store: [de, fr, au]
       fail-fast: false
 
     steps:
@@ -38,11 +88,19 @@ jobs:
       - name: Sync to store branches
         run: |
           SOURCE_BRANCH="${{ github.ref_name }}"
+          # 确保拿到 build_uno_css 推上来的最新源分支提交
+          git fetch origin "$SOURCE_BRANCH"
           # 确定目标分支
           if [ "$SOURCE_BRANCH" = "main" ]; then
-            TARGET_BRANCH="${{ matrix.store }}-main"
+            TARGET_BRANCH="main-${{ matrix.store }}"
+          elif [ "$SOURCE_BRANCH" = "staging" ]; then
+            TARGET_BRANCH="staging-${{ matrix.store }}"
+          elif [ "$SOURCE_BRANCH" = "test" ]; then
+            TARGET_BRANCH="test-${{ matrix.store }}"
           else
-            TARGET_BRANCH="${{ matrix.store }}-staging"
+            # 如果源分支不是 main、staging 或 test，则退出
+            echo "Error: Unknown source branch '$SOURCE_BRANCH'. Expected: main, staging, or test."
+            exit 1
           fi
 
           echo "Syncing $SOURCE_BRANCH -> $TARGET_BRANCH"
@@ -64,12 +122,13 @@ jobs:
 
           # 2. 无论是否有冲突，强制还原目标分支上的配置文件版本
           #    HEAD 指向合并前的目标分支提交
+          git restore --source=HEAD -- config/markets.json || true
           git restore --source=HEAD -- config/settings_data.json || true
           git restore --source=HEAD -- templates/*.json || true
           git restore --source=HEAD -- templates/gift_card.liquid || true
           git restore --source=HEAD -- sections/*-group.json || true
 
-          # 3. 重新暂存所有更改并提交合并
+          # 3. 重新暂存所有更改并提交合并（包含从源分支带来的 assets/uno.css）
           git add .
 
           # 如果合并后确实有变更，则创建合并提交；否则跳过提交
@@ -79,5 +138,5 @@ jobs:
             echo "No code changes to sync from $SOURCE_BRANCH to $TARGET_BRANCH"
           fi
 
-          # 推送到 GitHub
+          # 推送到 GitHub（包含 assets/uno.css）
           git push origin "$TARGET_BRANCH"
