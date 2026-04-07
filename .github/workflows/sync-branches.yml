@@ -15,15 +15,6 @@ on:
     #   - 'sections/*-group.json'
     #   - 'assets/uno.css'
   workflow_dispatch:
-    inputs:
-      source_branch:
-        description: '源分支'
-        required: true
-        type: choice
-        options:
-          - main
-          - staging
-          - test
 permissions:
   contents: write
 
@@ -96,7 +87,7 @@ jobs:
 
       - name: Sync to store branches
         run: |
-          SOURCE_BRANCH="${{ inputs.source_branch }}"
+          SOURCE_BRANCH="${{ github.ref_name }}"
           # 确保拿到 build_uno_css 推上来的最新源分支提交
           git fetch origin "$SOURCE_BRANCH"
           # 确定目标分支
