@@ -5,6 +5,7 @@
 
 # 从 sync-branches.yml 中提取的忽略路径
 IGNORE_PATTERNS=(
+  'config/markets.json'
   'config/settings_data.json'
   'templates/*.json'
   'templates/gift_card.liquid'
